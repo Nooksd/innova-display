@@ -55,7 +55,7 @@ watch(
 
 // função pega informações sobre o tempo uberaba
 async function getWhetherData() {
-  let whether = await whetherApi.get(`current.json?key=${import.meta.env.VITE_WHETHER_KEY}&q=uberaba&lang=pt`);
+  let whether = await whetherApi.get(`current.json?key=33d417b2a82440a7b29140126240702&q=uberaba&lang=pt`);
   whether = whether.data.current;
 
   // atribui dados da api
