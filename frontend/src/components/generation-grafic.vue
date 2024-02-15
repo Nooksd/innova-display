@@ -1,7 +1,7 @@
 <template>
   <!-- GRÁFICO DE GERAÇÂO -->
 
-  <Bar v-if="loaded" :data="chartData" :options="chartOptions" :height="chartHeight" :width="chartWidth" />
+  <Bar v-if="loaded" :data="chartData" :options="chartOptions" :height="chartHeight" :width="chartWidth"/>
   <!-- ANIMAÇÂO DE LOADING -->
 
   <h1 v-if="!loaded" class="loading">
@@ -29,7 +29,7 @@ import { Bar } from 'vue-chartjs';
 import { onMounted, ref, defineProps, watch } from 'vue';
 import { Chart as ChartJS, Title, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels'
-import { solarzGeneration } from '@/services/Http.js';
+import { solarzProxyApi } from '@/services/Http.js';
 
 
 // <--// EXECUTA FUNÇÂO ANTES DE CARREGAR PÀGINA //-->
@@ -47,7 +47,7 @@ const dataV = ref([]);
 const labelV = ref([]);
 const white50 = 'rgba(255, 255, 255, .5)';
 const chartHeight = 430;
-const chartWidth = 1160;
+const chartWidth = 1160;  
 
 
 // <--// REGISTRA O CONTEUDO DO GRÁFICO //-->
@@ -95,11 +95,11 @@ const chartOptions = {
     tooltip: false,
     legend: false,
     datalabels: {
-      color: '#fff',
-      anchor: 'end',
-      align: 'bottom',
+      color: '#fff', 
+      anchor: 'end', 
+      align: 'bottom', 
       formatter: (value, context) => `${value} kWh`,
-      offset: 0
+      offset: 0 
     }
   },
 }
@@ -110,36 +110,14 @@ const chartOptions = {
 // função do vue para atualizar dados do gráfico
 watch(() => props.usinaId, (newValue) => {
   dataV.value = [];
-  labelV.value = [];
-  getData(newValue);
+  labelV.value = []; 
+  getData(newValue); 
 });
 
 // função pega dados do gráfico na api
 async function getData(id) {
-  const currentDate = new Date();
-
-  const sixteenDaysAgo = new Date(currentDate.getTime() - (16 * 24 * 60 * 60 * 1000));
-  const oneDayAgo = new Date(currentDate.getTime() - (1 * 24 * 60 * 60 * 1000));
-
-  const yearP = sixteenDaysAgo.getFullYear();
-  const monthP = (sixteenDaysAgo.getMonth() < 9 ? '0' : '') + (sixteenDaysAgo.getMonth() + 1);
-  const dayP = (sixteenDaysAgo.getDate() < 10 ? '0' : '') + sixteenDaysAgo.getDate();
-
-  const year = oneDayAgo.getFullYear();
-  const month = (oneDayAgo.getMonth() < 9 ? '0' : '') + (oneDayAgo.getMonth() + 1);
-  const day = (oneDayAgo.getDate() < 10 ? '0' : '') + oneDayAgo.getDate();
-
-  const dataPassada = yearP + "-" + monthP + "-" + dayP;
-  const dataAtual = year + "-" + month + "-" + day;
-
-  const rangeData = {
-    "fromLocalDate": dataPassada,
-    "plantId": id,
-    "toLocalDate": dataAtual
-  }
-
   try {
-    const response = await solarzGeneration.get(`dayRange`, rangeData);
+    const response = await solarzProxyApi.get(`range/${id}`);
 
     response.data.forEach((e) => {
       dataV.value.push(Number(e.total).toFixed(0));

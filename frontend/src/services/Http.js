@@ -7,37 +7,13 @@ export const whetherApi = axios.create({
     }
 });
 
-export const solarzData = axios.create({
-    baseURL: 'https://app.solarz.com.br/openApi/seller/plant/',
+export const solarzProxyApi = axios.create({
+    baseURL: 'https://192.168.1.102:3000/',
     headers: {
         'Content-Type': 'aplication/json',
-    },
-  auth: {
-    username: 'suportetecnico@innova-energy.com.br',
-    password: 'senha123'
-  }
-});
-
-export const solarzGeneration = axios.create({
-    baseURL: 'https://app.solarz.com.br/openApi/seller/plant/energy/',
-    headers: {
-        'Content-Type': 'aplication/json',
-    },
-  auth: {
-    username: 'suportetecnico@innova-energy.com.br',
-    password: 'senha123'
-  }
-});
-
-export const solarzGenerationDay = axios.create({
-    baseURL: 'https://app.solarz.com.br/openApi/seller/plantRealTimeData/powerCurve/day/',
-    headers: {
-        'Content-Type': 'aplication/json',
-    },
-  auth: {
-    username: 'suportetecnico@innova-energy.com.br',
-    password: 'senha123'
-  }
+        'user': 'suportetecnico@innova-energy.com.br',
+        'password': 'senha123'
+    }
 });
 
 

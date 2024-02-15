@@ -1,7 +1,7 @@
 <template>
   <!-- GRÁFICO DE GERAÇÃO -->
 
-  <Line v-if="loaded" :data="chartData" :options="chartOptions" :height="chartHeight" :width="chartWidth" />
+  <Line v-if="loaded" :data="chartData" :options="chartOptions" :height="chartHeight" :width="chartWidth"/>
 
 
   <!-- ANIMAÇÃO DE LOADING -->
@@ -29,7 +29,7 @@ import { Line } from 'vue-chartjs';
 import { onMounted, ref, defineProps, watch } from 'vue';
 import { Chart as ChartJS, Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels'
-import { solarzGenerationDay } from '@/services/Http.js';
+import { solarzProxyApi } from '@/services/Http.js';
 
 
 // <--// EXECUTA FUNÇÂO ANTES DE CARREGAR PÀGINA //-->
@@ -47,7 +47,7 @@ const dataV = ref([]);
 const labelV = ref([]);
 const white50 = 'rgba(255, 255, 255, .5)';
 const chartHeight = 430;
-const chartWidth = 1160;
+const chartWidth = 1160;  
 
 
 // <--// REGISTRA O CONTEUDO DO GRÁFICO //-->
@@ -118,16 +118,8 @@ watch(() => props.usinaId, (newValue) => {
 });
 
 async function getData(id) {
-  const currentDate = new Date();
-
-  const year = currentDate.getFullYear();
-  const month = (currentDate.getMonth() < 9 ? '0' : '') + (currentDate.getMonth() + 1);
-  const day = (currentDate.getDate() < 10 ? '0' : '') + currentDate.getDate();
-
-  const date = year + "-" + month + "-" + day;
-
   try {
-    const response = await solarzGenerationDay.get(`${date}/unitePortals/true/plantId/${id}`);
+    const response = await solarzProxyApi.get(`powerCurve/${id}`);
 
     let solarData;
 

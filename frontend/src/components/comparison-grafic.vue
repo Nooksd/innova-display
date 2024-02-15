@@ -1,5 +1,5 @@
 <template>
-  <!-- GRÁFICO DE COMPARAÇÂO -->
+<!-- GRÁFICO DE COMPARAÇÂO -->
 
   <Doughnut v-if="loaded" :data="chartData" :options="chartOptions" width="250" />
   <!-- ANIMAÇÂO DE LOADING -->
@@ -28,7 +28,7 @@
 import { Doughnut } from 'vue-chartjs';
 import { onMounted, ref } from 'vue';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import { solarzData } from '@/services/Http.js';
+import { solarzProxyApi } from '@/services/Http.js';
 
 
 // <--// EXECUTA FUNÇÂO ANTES DE CARREGAR PÀGINA //-->
@@ -66,7 +66,7 @@ const chartOptions = {
   plugins: {
     tooltip: false,
     datalabels: {
-      color: '#fff',
+      color: '#fff', 
       formatter: (value, context) => `${value} mWh`,
     }
   }
@@ -78,19 +78,11 @@ const chartOptions = {
 // função pega dados do gráfico na api
 async function getData() {
   try {
-    const allTotals = [];
-    const ids = ['157061', '186333', '799318'];
+    const response = await solarzProxyApi.get('comparison/157061/186333/799318')
 
-    // pega todos os dados na api com os 3 ids
-    for (const id of ids) {
-      const response = await solarzData.get(`power?id=${id}`);
-      allTotals.push(response.data.totalGenerated);
-    }
-
-
-    dataV.value.push(Number(allTotals[0] / 1000).toFixed(0))
-    dataV.value.push(Number(allTotals[1] / 1000).toFixed(0))
-    dataV.value.push(Number(allTotals[2] / 1000).toFixed(0))
+    dataV.value.push(Number(response.data[0] / 1000).toFixed(0))
+    dataV.value.push(Number(response.data[1] / 1000).toFixed(0))
+    dataV.value.push(Number(response.data[2] / 1000).toFixed(0))
     loaded.value = true;
   } catch (e) {
     console.log(e)
